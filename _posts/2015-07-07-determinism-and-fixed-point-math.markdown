@@ -16,13 +16,13 @@ As we had hoped, the new environment begets new thoughts. It's very interesting 
 
 A couple of months ago I got the idea that my game would be much better if you control a group of characters instead of just one. I decided I had to give it a try.
 
-For technical reasons this meant I would have to use the socalled *lockstep* network synchronization technique. Most RTS games uses it because it lets you synchronize hundreds (if not thousands) of entities over the internet. It is awesome, actually. With the regular *authoritative server model*, the game server simulates the game and send state updates to clients. This becomes infeasible if you have many entities. However, with the lockstep technique each client simulates the entire game themself so the server does not have to send state updates.
+For technical reasons this meant I would have to use the socalled *lockstep* network synchronization technique. Most RTS games use it because it lets you synchronize hundreds (if not thousands) of entities over the internet. It is awesome, actually. With the regular *authoritative server model*, the game server simulates the game and sends state updates to clients. This becomes infeasible if you have many entities. However, with the lockstep technique each client simulates the entire game themself so the server does not have to send state updates.
 
 But it comes at a price: your game state simulation must be 100% deterministic down to the very last bit. Even the tiniest differences would accumulate over time and cause problems. Unfortunately, achieving full cross platform determinism is not easy.
 
 ## Floating point problems
 
-Most simulations rely on floating point math. And even though floating point math is [standardized](http://en.wikipedia.org/wiki/IEEE_floating_point) it turns out to be [rather difficult](http://gafferongames.com/networking-for-game-programmers/floating-point-determinism/) to get deterministic behavior across operation systems, compilers, and CPU architectures. Even if you do manage to get basic arithmetic working properly, there is also trancendental functions (`sin()`, `cos()`, etc.) to think about.
+Most simulations rely on floating point math. And even though floating point math is [standardized](http://en.wikipedia.org/wiki/IEEE_floating_point) it turns out to be [rather difficult](http://gafferongames.com/networking-for-game-programmers/floating-point-determinism/) to get deterministic behavior across operation systems, compilers, and CPU architectures. Even if you do manage to get basic arithmetic working properly, there is also transcendental functions (`sin()`, `cos()`, etc.) to think about.
 
 For example, the result of `sqrt(x)` may vary slightly between game clients. This means that the world state on each client will drift farther away from each other as time passes. Eventually, each player's view of the world would be completely different from the others. A game where each player sees an alternative reality sounds interesting, but that is usually not what you want.
 
@@ -35,7 +35,7 @@ It [seems](http://gafferongames.com/networking-for-game-programmers/floating-poi
 
 ## Fixed point math to the rescue
 
-Fortunately, I learned about a technique that allows you to do real number arithmetic using only integer CPU operations. This is great because integer operations are deterministic out of the box across compilers, OSs, CPUs. Determinisn *and* real number support - that is exactly what I was looking for! Yay!
+Fortunately, I learned about a technique that allows you to do real number arithmetic using only integer CPU operations. This is great because integer operations are deterministic out of the box across compilers, OSs, CPUs. Determinism *and* real number support - that is exactly what I was looking for! Yay!
 
 <p class="photo">
   <img src="/assets/images/racoon-excellent.jpg"><br>
